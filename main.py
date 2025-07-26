@@ -26,24 +26,27 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-
-        
-        screen.fill("black")
-        dt = clock.tick(60) / 1000
+       
         keys = pygame.key.get_pressed() 
         updatable.update(dt)
         for asteroid in asteroids:
             if player.collides_with(asteroid):
                 print("Game over!")
                 sys.exit()
+            for shot in shots:
+                if asteroid.collides_with(shot):
+                    shot.kill()
+                    asteroid.split()
+        screen.fill("black")
+
         for drawable_object in drawable:
             drawable_object.draw(screen)
-        if keys[pygame.K_SPACE]:
-            shot = player.shoot()
-            if shot is not None:
-                updatable.add(shot)
-                drawable.add(shot)
-        pygame.display.flip()   
+        shot = player.update(dt)
+        if shot is not None:
+            updatable.add(shot)
+            drawable.add(shot)
+        pygame.display.flip() 
+        dt = clock.tick(60) / 1000  
      
        
         
